@@ -9,9 +9,11 @@ blogs_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/blogs'
 all_blogs_data = []
 
 def blog_to_dict(path_to_blog):
+    
     file_name = path_to_blog.split('/')[-1]
     # Remove .xml
     file_name = file_name[:-4]
+    
     id, gender, age, industry, sunsign = file_name.split('.')
     # Will ignore industry and sunsign in this project
 
@@ -31,18 +33,24 @@ def blog_to_dict(path_to_blog):
         # Strip off the unnecessary whitespaces
         blog_content = blog_content.strip()
 
+        for A in blog_content.split("<date>")[1:]:
+            date = A.split("</date>")[0].strip()
+            post = A.split("</date>")[1].replace("<post>", "").replace("</post>", "").strip()
+            post = BeautifulSoup(post).get_text()
 
+            blog_dict["Posts"].append((date, post))
 
+    return blog_dict
 
 
 def blog_to_sframe():
-    i = 1
+
     for blog in os.listdir(blogs_path)[1:]:
         i += 1
         path_to_blog = blogs_path + '/' + blog
-        print path_to_blog
         # Convert blog to Dictionary
         blog_dict = blog_to_dict(path_to_blog)
-        print "\n\n"
-        if i == 3:
-            break
+
+
+
+#blog_to_sframe()
