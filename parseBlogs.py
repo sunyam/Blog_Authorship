@@ -1,12 +1,9 @@
 from bs4 import BeautifulSoup
 import os
+import graphlab as gl
 
 # Path to the main dataset directory:
-blogs_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/blogs'
-
-# 'all_blogs_data' is a list of dictionaries where each dictionary represents a blog, each blog has various 'keys': Gender, Age, Posts, Dates etc.
-
-all_blogs_data = []
+blogs_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/blogs_kam'
 
 def blog_to_dict(path_to_blog):
     
@@ -36,21 +33,43 @@ def blog_to_dict(path_to_blog):
         for A in blog_content.split("<date>")[1:]:
             date = A.split("</date>")[0].strip()
             post = A.split("</date>")[1].replace("<post>", "").replace("</post>", "").strip()
-            post = BeautifulSoup(post).get_text()
+            post = BeautifulSoup(post, "lxml").get_text()
 
             blog_dict["Posts"].append((date, post))
 
     return blog_dict
 
 
-def blog_to_sframe():
+def blog_to_sframe(save_output_path):
 
     for blog in os.listdir(blogs_path)[1:]:
-        i += 1
         path_to_blog = blogs_path + '/' + blog
         # Convert blog to Dictionary
         blog_dict = blog_to_dict(path_to_blog)
+        all_blogs_data.append(blog_dict)
+
+    print str(len(all_blogs_data)) + " blogs parsed.\n"
+
+    # Load this list into a SFrame object-
+    
+    # Need to unpack- because by default, the entire blog_dict goes into one column (Default Name of that column: X1)
+    sframe = gl.SFrame(all_blogs_data).unpack("X1")
+
+    # After unpacking, name changes to "X1.Age" and so on.. Taking care of that:
+    rename_dict = {}
+    for name in sframe.column_names():
+        rename_dict[name] = name[3:]
+
+    sframe.rename(rename_dict)
+
+    # Save the sframe
+    sframe.save(save_output_path)
+    print "SFrame has been saved at ", save_output_path
+
+    return sframe
 
 
+# 'all_blogs_data' is a list of dictionaries where each dictionary represents a blog, each blog has various 'keys': Gender, Age, Posts, Dates etc.
+all_blogs_data = []
 
-#blog_to_sframe()
+print blog_to_sframe('/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/blogs.sframe')
