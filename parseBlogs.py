@@ -58,7 +58,8 @@ def process_blogs():
     for blog_dict in all_blogs_data:
         all_posts = "\n".join(blog_dict['Posts'])
         
-        with open('/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/txt_blogs/'+str(blog_dict['Id'])+'.txt', 'wb') as f:
+        fname = str(blog_dict['Id']) + '.' +str(blog_dict['Gender']) + '.' + str(blog_dict['Age'])
+        with open('/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/txt_blogs/'+fname+'.txt', 'wb') as f:
             f.write(all_posts.encode('utf8'))
     
         i += 1
