@@ -109,7 +109,9 @@ for dict in list_of_dicts:
 
 print "\nPickling...."
 
-pickle_path = '/Users/sunyambagga/Github/Blog_Authorship/'
+# Path to where the pickle-file will be stored
+pickle_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/'
+
 with open(pickle_path+'feature_vectors.pickle', 'wb') as f:
     pickle.dump(list_of_dicts, f)
 
