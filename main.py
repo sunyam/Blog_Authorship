@@ -25,8 +25,6 @@ y = np.array(y)
 
 from sklearn.linear_model import LogisticRegression
 
-
-
 #gs_clf.fit(x, y)
 #
 #print "\n"
