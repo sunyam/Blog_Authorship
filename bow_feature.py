@@ -1,6 +1,6 @@
 '''
 Identifying the Most important words in a Blog.
-Pickling the results for future-use. (Useful in calculating Bag-of-Words features.
+Saving the results for future-use in a JSON file (Useful in calculating Bag-of-Words features).
 '''
 
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -19,7 +19,7 @@ with open(file_path, 'rb') as file:
     for line in lines:
         my_stopwords.append(line.rstrip())
 
-default_stopwords = set(stopwords.words('english') + list(punctuation)  + my_stopwords)
+default_stopwords = set(stopwords.words('english') + list(punctuation) + my_stopwords)
 
 
 import gensim
@@ -86,10 +86,10 @@ for blog in os.listdir(path)[1:]:
 print "\nWe have captured " + str(len(list_of_dicts)) + " blogs.\n"
 
 # Pickling the dictionary:
-print "Pickling...."
-import pickle
+print "Saving Results...."
+import json
 
-with open('/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/bow_features40.pickle', 'wb') as f:
-    pickle.dump(list_of_dicts, f)
+with open('/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/bow_features40.json', 'wb') as f:
+    json.dump(list_of_dicts, f)
 
 print "Done."
