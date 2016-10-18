@@ -64,3 +64,41 @@ print confusion_matrix(y_test, y_pred)
 print "Accuracy: "
 print accuracy_score(y_test, y_pred)
 ##############################################################################
+
+##############################################################################
+'''
+2. Second Approach:
+- Using Bag-of-Words feature-vectors for each blog (previously calculated and pickled in 'feature_extraction.py')
+'''
+import json
+bow_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/bow_features40.json'
+
+# Load Important_Words
+with open(bow_path, 'rb') as f:
+    _2_list_of_dicts = json.load(f)
+
+print "Loaded " + str(len(_2_list_of_dicts)) + " blogs."
+
+# Prepare x_train/test and y_train/test
+x_training = []
+y_training = []
+x_test = []
+y_test = []
+
+for dict in _2_list_of_dicts[:16000]:
+    words = dict['Imp_words']
+    sentence = " ".join(words)
+    x_training.append(sentence)
+    y_training.append(dict['Gender'])
+
+for dict in _2_list_of_dicts[16000:]:
+    words = dict['Imp_words']
+    sentence = " ".join(words)
+    x_test.append(sentence)
+    y_test.append(dict['Gender'])
+
+print len(x_training)
+print len(y_training)
+print "\n\n"
+print len(x_test)
+print len(y_test)
