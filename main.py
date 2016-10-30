@@ -1,15 +1,21 @@
 import os
 import numpy as np
 import pickle
+import json
 from sklearn.linear_model import LogisticRegression
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import accuracy_score
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import confusion_matrix
 
 ##############################################################################
 '''
 1. First Approach: 
 - Using Average Word2Vec vectors for each blog (previously calculated and pickled in 'feature_extraction.py')
 '''
+print "\nFIRST APPROACH (word2vec)...."
+
 word2vec_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/feature_vectors.pickle'
 
 # Load the feature-vectors
@@ -30,9 +36,9 @@ y = np.array(y)
 
 parameters = {'C':[0.00001, 0.001, 1.0, 1000.0, 100000.0], 'solver':['newton-cg', 'lbfgs', 'liblinear']}
 
-gender_clf = LogisticRegression()
+lr1_g_clf = LogisticRegression()
 
-gs_clf = GridSearchCV(estimator=gender_clf, param_grid=parameters)
+gs_clf = GridSearchCV(estimator=lr1_g_clf, param_grid=parameters)
 
 gs_clf.fit(x, y)
 
@@ -52,17 +58,10 @@ for d in list_of_dicts[16000:]:
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
-#print "Newton C=1 Accuracy: ", gender_clf.score(x_test, y_test)
-#print "Newton C=0.01 Accuracy: ", gender_clf_1000.score(x_test, y_test)
-#print "Newton C=0.00001 Accuracy: ", gender_clf_100000.score(x_test, y_test)
-
 y_pred = gs_clf.predict(x_test)
 
-from sklearn.metrics import confusion_matrix
 print confusion_matrix(y_test, y_pred)
-
-print "Accuracy: "
-print accuracy_score(y_test, y_pred)
+print "Accuracy: ", accuracy_score(y_test, y_pred)
 ##############################################################################
 
 ##############################################################################
@@ -70,7 +69,7 @@ print accuracy_score(y_test, y_pred)
 2. Second Approach:
 - Using Bag-of-Words feature-vectors for each blog (previously calculated and pickled in 'feature_extraction.py')
 '''
-import json
+print "\n\n\n\n\n\nSECOND APPROACH (n-grams)...."
 bow_path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/bow_features40.json'
 
 # Load Important_Words
@@ -97,8 +96,27 @@ for dict in _2_list_of_dicts[16000:]:
     x_test.append(sentence)
     y_test.append(dict['Gender'])
 
-print len(x_training)
-print len(y_training)
-print "\n\n"
-print len(x_test)
-print len(y_test)
+#print len(x_training)
+#print len(y_training)
+#print "\n\n"
+#print len(x_test)
+#print len(y_test)
+
+vectorizer = CountVectorizer(min_df=1)
+X = vectorizer.fit_transform(x_training)
+X = X.toarray()
+
+nb2_g_clf = MultinomialNB()
+lr2_g_clf = LogisticRegression(C=1.0, solver='liblinear')
+
+# Training Naive Bayes classifier for Gender:
+nb2_g_clf.fit(X, y_training)
+
+# Training LogReg classifier for Gender:
+lr2_g_clf.fit(X, y_training)
+
+X_test = vectorizer.transform(x_test)
+
+print "NB Accuracy: ", nb2_g_clf.score(X_test, y_test)
+print "LogReg Accuracy: ", lr2_g_clf.score(X_test, y_test)
+##############################################################################
