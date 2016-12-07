@@ -1,4 +1,5 @@
 '''
+--> Word2Vec Approach:
 Extracting features from each Blog
 Calculate a BlogVector for each Blog and Pickle it for future use.
 '''

@@ -17,7 +17,7 @@ def blog_to_dict(path_to_blog):
     blog_dict["Age"] = age
     blog_dict["Gender"] = gender
     blog_dict["Id"] = id
-    # Posts is going to be a list of tuples: [(date1, post1), (date2, post2)....]
+    # Posts is going to be a list
     blog_dict["Posts"] = []
 
     with open(path_to_blog, 'rb') as f:
