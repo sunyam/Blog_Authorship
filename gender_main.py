@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import confusion_matrix
+from sklearn import svm
 
 ##############################################################################
 '''
@@ -36,17 +37,16 @@ y = np.array(y)
 
 parameters = {'C':[0.00001, 0.001, 1.0, 1000.0, 100000.0], 'solver':['newton-cg', 'lbfgs', 'liblinear']}
 
-lr1_g_clf = LogisticRegression()
-
-gs_clf = GridSearchCV(estimator=lr1_g_clf, param_grid=parameters)
-
+gs_clf = LogisticRegression()
 gs_clf.fit(x, y)
 
-print "Accuracy: ", gs_clf.best_score_
-
-print "Optimal Parameters: "
-for p in sorted(parameters.keys()):
-    print p, gs_clf.best_params_[p]
+#lr1_g_clf = LogisticRegression()
+#gs_clf = GridSearchCV(estimator=lr1_g_clf, param_grid=parameters)
+#gs_clf.fit(x, y)
+#print "Accuracy: ", gs_clf.best_score_
+#print "Optimal Parameters: "
+#for p in sorted(parameters.keys()):
+#    print p, gs_clf.best_params_[p]
 
 x_test = []
 y_test = []
@@ -61,7 +61,14 @@ y_test = np.array(y_test)
 y_pred = gs_clf.predict(x_test)
 
 print confusion_matrix(y_test, y_pred)
-print "Accuracy: ", accuracy_score(y_test, y_pred)
+print "LogReg Accuracy: ", accuracy_score(y_test, y_pred)
+
+
+svm_gender_clf = svm.LinearSVC(verbose=1, max_iter=2000)
+svm_gender_clf.fit(x, y)
+print "SVM: ", svm_gender_clf.score(x_test, y_test)
+
+
 ##############################################################################
 
 ##############################################################################
@@ -119,4 +126,10 @@ X_test = vectorizer.transform(x_test)
 
 print "NB Accuracy: ", nb2_g_clf.score(X_test, y_test)
 print "LogReg Accuracy: ", lr2_g_clf.score(X_test, y_test)
+
+
+svm_gender2_clf = svm.LinearSVC(verbose=1, max_iter=2000)
+svm_gender2_clf.fit(X, y_training)
+print "SVM: ", svm_gender2_clf.score(X_test, y_test)
+
 ##############################################################################
