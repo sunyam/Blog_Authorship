@@ -17,7 +17,7 @@ path = '/Users/sunyambagga/Desktop/MinorProjects/7th_Sem/txt_blogs/'
 # List of dictionaries where each dictionary represents a blog
 list_of_dicts = []
 
-for blog in os.listdir(path)[1:]:
+for blog in os.listdir(path)[1:100]:
 #     print blog
     [ID, gender, age] = blog.split('.')[:-1]
 
